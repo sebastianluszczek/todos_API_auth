@@ -10,8 +10,8 @@ mongoose.connect(
   () => console.log('Connected to Mongo database')
 );
 
-app.get('/', (req, res) => {
-  res.send('success');
-});
+app.use(express.json());
+
+app.use('/api/todos', require('./routes/todo.routes'));
 
 module.exports = app;
