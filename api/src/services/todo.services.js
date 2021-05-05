@@ -13,10 +13,14 @@ module.exports.getTodoById = async id => {
   return doc;
 };
 module.exports.updateTodoById = async (id, data) => {
-  const doc = await Todo.updateOne({ _id: id }, { $set: { ...data } });
+  const doc = await Todo.findByIdAndUpdate(
+    { _id: id },
+    { ...data },
+    { new: true }
+  );
   return doc;
 };
 module.exports.removeTodoById = async id => {
-  const doc = await Todo.remove({ _id: id });
+  const doc = await Todo.findOneAndDelete({ _id: id });
   return doc;
 };
