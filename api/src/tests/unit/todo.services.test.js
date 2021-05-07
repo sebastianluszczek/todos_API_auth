@@ -8,6 +8,8 @@ const {
   removeTodoById,
 } = require('../../services/todo.services');
 
+const { connect, clearDatabase, closeDatabase } = require('../setup');
+
 const Todo = require('../../models/todo.model');
 
 const todo1 = {
@@ -19,19 +21,26 @@ const todo2 = {
   description: 'Description of test',
 };
 
+beforeAll(async () => await connect());
+
+afterEach(async () => await clearDatabase());
+
+afterAll(async () => await closeDatabase());
+
 describe('Todo services Test', () => {
   // Connect to the MongoDB Memory Server
-  beforeAll(async () => {
-    await mongoose.connect(global.__MONGO_URI__, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-    });
-  });
+  // beforeAll(async () => {
+  //   await mongoose.connect(global.__MONGO_URI__, {
+  //     useNewUrlParser: true,
+  //     useCreateIndex: true,
+  //     useUnifiedTopology: true,
+  //   });
+  // });
 
-  afterEach(async () => {
-    // Clear collection after each test
-    await Todo.deleteMany();
-  });
+  // afterEach(async () => {
+  //   // Clear collection after each test
+  //   await Todo.deleteMany();
+  // });
 
   it('should create todo', async () => {
     const doc = await createTodo(todo1);
@@ -113,7 +122,8 @@ describe('Todo services Test', () => {
     expect(response.description).toBe('Description of test updated');
   });
 
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
+  // afterAll(async () => {
+  //   await mongoose.connection.close();
+  //   done();
+  // });
 });

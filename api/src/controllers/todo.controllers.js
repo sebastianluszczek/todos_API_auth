@@ -15,7 +15,9 @@ const {
 module.exports.getAll = async (req, res, next) => {
   try {
     const todos = await getAllTodos();
-    res.json(todos);
+    res.json({
+      todos: todos,
+    });
   } catch (error) {
     next(error);
   }
@@ -28,7 +30,7 @@ module.exports.createOne = async (req, res, next) => {
     if (error) throw new ErrorHandler(400, error.details[0].message);
 
     const doc = await createTodo(req.body);
-    res.status(201).json(doc);
+    res.status(201).json({ todo: doc });
   } catch (error) {
     next(error);
   }
@@ -41,7 +43,7 @@ module.exports.getOne = async (req, res, next) => {
     if (!todo) {
       throw new ErrorHandler(404, [`Todo ${id} not found`]);
     }
-    res.json(todo);
+    res.json({ todo: todo });
   } catch (error) {
     next(error);
   }
@@ -59,7 +61,7 @@ module.exports.updateOne = async (req, res, next) => {
     if (error) throw new ErrorHandler(400, error.details[0].message);
 
     const doc = await updateTodoById(id, req.body);
-    res.json(doc);
+    res.json({ todo: doc });
   } catch (error) {
     next(error);
   }
