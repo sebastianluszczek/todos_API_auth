@@ -31,11 +31,16 @@ describe('Todo routes tests', () => {
       expect(res.statusCode).toEqual(201);
       expect(res.body).toHaveProperty('todo');
     });
+    it('should not allow create todo with incomplete body', async () => {
+      const res = await request(app).post('/api/todos').send({
+        description: 'descriptions',
+      });
+      expect(res.statusCode).toEqual(400);
+    });
   });
 
   describe('GET /api/todos', () => {
     it('should return todos list', async () => {
-      // Fill collection with two todos
       await Todo.create([todo1, todo2]);
       const res = await request(app).get('/api/todos');
 
@@ -46,12 +51,20 @@ describe('Todo routes tests', () => {
   });
 
   describe('GET /api/todos/:id', () => {
-    it('should return one todo', async () => {
+    it('should return todo if exist', async () => {
       const doc = await Todo.create(todo1);
       const res = await request(app).get(`/api/todos/${doc._id}`);
 
       expect(res.statusCode).toEqual(200);
       expect(res.body.todo._id).toBe(doc.id);
+    });
+    it('should return error (404) if todo not exist', async () => {
+      const res = await request(app).get(`/api/todos/60950d9dea7edc006d7fc612`);
+      expect(res.statusCode).toEqual(404);
+    });
+    it('should return error (400) if ID not valid ID', async () => {
+      const res = await request(app).get(`/api/todos/not_ID`);
+      expect(res.statusCode).toEqual(400);
     });
   });
 
