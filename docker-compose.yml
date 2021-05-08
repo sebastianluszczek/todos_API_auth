@@ -13,8 +13,25 @@ services:
     volumes:
       - ./api:/app
       - '/app/node_modules'
+  auth:
+    container_name: auth
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo-auth
+    volumes:
+      - ./auth:/app
+      - '/app/node_modules'
   mongo:
     container_name: mongo
     image: mongo:4.4
     ports:
       - 27017:27017
+  mongo-auth:
+    container_name: mongo-auth
+    image: mongo:4.4
+    ports:
+      - 27018:27017

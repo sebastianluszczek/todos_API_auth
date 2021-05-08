@@ -1,5 +1,17 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
+
+// use 'utf8' to get string instead of byte array  (512 bit key)
+const privateKEY = fs.readFileSync(
+  path.join(__dirname, '../..', 'private.key'),
+  'utf8'
+);
+const publicKEY = fs.readFileSync(
+  path.join(__dirname, '../..', 'public.key'),
+  'utf8'
+);
 
 const { getUserByEmail, createUser } = require('../services/user.services');
 
@@ -61,7 +73,11 @@ module.exports.loginUser = async (req, res, next) => {
         name: user.name,
         email: user.eamil,
       },
-      process.env.JWT_SECRET
+      privateKEY,
+      {
+        algorithm: 'RS256',
+        // expiresIn: '1m',
+      }
     );
 
     res.status(200).json({
