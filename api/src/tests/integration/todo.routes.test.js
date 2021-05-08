@@ -7,10 +7,12 @@ const Todo = require('../../models/todo.model');
 const todo1 = {
   title: 'Test ToDo #1',
   description: 'Description of test',
+  user: '6096f102a578b2006215fc5e',
 };
 const todo2 = {
   title: 'Test ToDo #2',
   description: 'Description of test',
+  user: '6096f102a578b2006215fc5e',
 };
 
 const { connect, clearDatabase, closeDatabase } = require('../setup');
@@ -20,7 +22,7 @@ beforeAll(done => {
   request('http://localhost:4000')
     .post('/auth/login')
     .send({
-      email: 'seba@mail.com',
+      email: 'test@mail.com',
       password: 'pass123',
     })
     .end((err, response) => {

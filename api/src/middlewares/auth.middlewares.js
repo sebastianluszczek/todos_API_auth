@@ -13,9 +13,10 @@ module.exports.verifyToken = async (req, res, next) => {
   const token = req.header('Authentication').split(' ')[1];
   if (!token) throw new ErrorHandler(401, 'Missing access token');
   try {
-    await jwt.verify(token, publicKEY, {
+    const verified = await jwt.verify(token, publicKEY, {
       algorithms: ['RS256'],
     });
+    req.user = verified;
     next();
   } catch (error) {
     console.log(error);

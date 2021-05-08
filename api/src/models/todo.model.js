@@ -13,6 +13,10 @@ const todoSchema = new mongoose.Schema({
     max: 1000,
     required: true,
   },
+  user: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+  },
   completed: {
     type: Boolean,
     default: false,

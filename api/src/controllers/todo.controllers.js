@@ -14,7 +14,7 @@ const {
 
 module.exports.getAll = async (req, res, next) => {
   try {
-    const todos = await getAllTodos();
+    const todos = await getAllTodos(req.user._id);
     res.json({
       todos: todos,
     });
@@ -29,7 +29,12 @@ module.exports.createOne = async (req, res, next) => {
     const { error } = createTodValidator(req.body);
     if (error) throw new ErrorHandler(400, error.details[0].message);
 
-    const doc = await createTodo(req.body);
+    const data = {
+      ...req.body,
+      user: req.user._id,
+    };
+
+    const doc = await createTodo(data);
     res.status(201).json({ todo: doc });
   } catch (error) {
     next(error);
@@ -39,7 +44,7 @@ module.exports.createOne = async (req, res, next) => {
 module.exports.getOne = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const todo = await getTodoById(id);
+    const todo = await getTodoById(id, req.user._id);
     if (!todo) {
       throw new ErrorHandler(404, [`Todo ${id} not found`]);
     }
@@ -53,7 +58,7 @@ module.exports.updateOne = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    const todo = await getTodoById(id);
+    const todo = await getTodoById(id, req.user._id);
     if (!todo) throw new ErrorHandler(404, [`Todo ${id} not found`]);
 
     // Validate request
@@ -70,7 +75,7 @@ module.exports.updateOne = async (req, res, next) => {
 module.exports.removeOne = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const todo = await getTodoById(id);
+    const todo = await getTodoById(id, req.user._id);
     if (!todo) throw new ErrorHandler(404, [`Todo ${id} not found`]);
 
     await removeTodoById(id);

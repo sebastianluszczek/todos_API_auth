@@ -15,10 +15,12 @@ const Todo = require('../../models/todo.model');
 const todo1 = {
   title: 'Test ToDo #1',
   description: 'Description of test',
+  user: '609699121a57c8001d4e4418',
 };
 const todo2 = {
   title: 'Test ToDo #2',
   description: 'Description of test',
+  user: '609699121a57c8001d4e4418',
 };
 
 beforeAll(async () => await connect());
@@ -39,7 +41,7 @@ describe('Todo services test', () => {
 
   describe('getAllTodos service', () => {
     it('should retrieve empty list if no todos', async () => {
-      const response = await getAllTodos();
+      const response = await getAllTodos('609699121a57c8001d4e4418');
 
       expect(response).toBeDefined();
       expect(Array.isArray(response)).toBe(true);
@@ -47,7 +49,7 @@ describe('Todo services test', () => {
     });
     it('should retrieve list of todos', async () => {
       const doc = await Todo.create([todo1, todo2]);
-      const response = await getAllTodos();
+      const response = await getAllTodos('609699121a57c8001d4e4418');
 
       expect(response).toBeDefined();
       expect(Array.isArray(response)).toBe(true);
@@ -58,7 +60,7 @@ describe('Todo services test', () => {
   describe('getTodoById service', () => {
     it('should return single todo by ID', async () => {
       const doc = await Todo.create(todo1);
-      const response = await getTodoById(doc._id);
+      const response = await getTodoById(doc._id, '609699121a57c8001d4e4418');
 
       expect(response).toBeDefined();
       expect(response._id).toBeDefined();
@@ -66,12 +68,17 @@ describe('Todo services test', () => {
       expect(response.title).toBe(todo1.title);
     });
     it('should return null if todo with ID not exist', async () => {
-      const response = await getTodoById('60950d9dea7edc006d7fc612');
+      const response = await getTodoById(
+        '60950d9dea7edc006d7fc612',
+        '609699121a57c8001d4e4418'
+      );
 
       expect(response).toBe(null);
     });
     it('should throw error if ID is not valid mongoDB ID', async () => {
-      await expect(getTodoById('not_ID')).rejects.toThrow();
+      await expect(
+        getTodoById('not_ID', '609699121a57c8001d4e4418')
+      ).rejects.toThrow();
     });
   });
 
@@ -101,6 +108,7 @@ describe('Todo services test', () => {
       const doc = await Todo.create({
         title: 'Test ToDo #1',
         description: 'Description of test',
+        user: '609699121a57c8001d4e4418',
       });
       const response = await updateTodoById(doc._id, {
         title: 'Test ToDo #1 updated',
@@ -117,6 +125,7 @@ describe('Todo services test', () => {
       const doc = await Todo.create({
         title: 'Test ToDo #1',
         description: 'Description of test',
+        user: '609699121a57c8001d4e4418',
       });
       const response = await updateTodoById(doc._id, {
         description: 'Description of test updated',
