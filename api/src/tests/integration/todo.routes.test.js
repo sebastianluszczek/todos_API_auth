@@ -1,4 +1,5 @@
 const request = require('supertest');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const app = require('../../index');
 
@@ -7,17 +8,16 @@ const Todo = require('../../models/todo.model');
 const todo1 = {
   title: 'Test ToDo #1',
   description: 'Description of test',
-  user: '6096f102a578b2006215fc5e',
 };
 const todo2 = {
   title: 'Test ToDo #2',
   description: 'Description of test',
-  user: '6096f102a578b2006215fc5e',
 };
 
 const { connect, clearDatabase, closeDatabase } = require('../setup');
 
 let token;
+let decoded;
 beforeAll(done => {
   request('http://localhost:4000')
     .post('/auth/login')
@@ -27,6 +27,10 @@ beforeAll(done => {
     })
     .end((err, response) => {
       token = response.body.token; // save the token!
+      decoded = jwt.decode(token); // save decoded token
+
+      todo1.user = decoded._id;
+      todo2.user = decoded._id;
       done();
     });
 });
@@ -50,6 +54,25 @@ describe('Todo routes tests', () => {
 
       expect(res.statusCode).toEqual(201);
       expect(res.body).toHaveProperty('todo');
+    });
+    it('should return 401 (unauthorized) with wrong JWT', async () => {
+      const res = await request(app)
+        .post('/api/todos')
+        .send({
+          title: 'Test todo',
+          description: 'descriptions',
+        })
+        .set({ Authentication: `Bearer ${'wrong_JWT'}` });
+
+      expect(res.statusCode).toEqual(401);
+    });
+    it('should return 401 (unauthorized) without JWT', async () => {
+      const res = await request(app).post('/api/todos').send({
+        title: 'Test todo',
+        description: 'descriptions',
+      });
+
+      expect(res.statusCode).toEqual(401);
     });
     it('should not allow create todo with incomplete body', async () => {
       const res = await request(app)

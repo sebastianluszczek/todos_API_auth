@@ -5,7 +5,7 @@ const { ErrorHandler } = require('../utils/error.utils');
 
 module.exports.getAllTodos = async user_id => {
   try {
-    const todos = await Todo.find({ user: user_id });
+    const todos = await Todo.find({ user: mongoose.Types.ObjectId(user_id) });
     return todos;
   } catch (error) {
     throw error;

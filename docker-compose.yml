@@ -35,3 +35,9 @@ services:
     image: mongo:4.4
     ports:
       - 27018:27017
+
+  # auth database seed
+  user-seed:
+    build: ./.dev/users-seed
+    depends_on:
+      - mongo-auth
