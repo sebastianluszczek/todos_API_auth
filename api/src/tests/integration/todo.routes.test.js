@@ -1,6 +1,8 @@
+/*global beforeAll, afterEach, afterAll, describe, it, expect*/
+
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+
 const app = require('../../index');
 
 const Todo = require('../../models/todo.model');

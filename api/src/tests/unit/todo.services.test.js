@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/*global beforeAll, afterEach, afterAll, describe, it, expect*/
 
 const {
   getAllTodos,
@@ -48,7 +48,7 @@ describe('Todo services test', () => {
       expect(response.length).toBe(0);
     });
     it('should retrieve list of todos', async () => {
-      const doc = await Todo.create([todo1, todo2]);
+      await Todo.create([todo1, todo2]);
       const response = await getAllTodos('609699121a57c8001d4e4418');
 
       expect(response).toBeDefined();
