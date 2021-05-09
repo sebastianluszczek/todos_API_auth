@@ -9,12 +9,12 @@ const publicKEY = fs.readFileSync(
 );
 const { ErrorHandler } = require('../utils/error.utils');
 
-module.exports.verifyToken = async (req, res, next) => {
+module.exports.verifyToken = (req, res, next) => {
   const authHeader = req.header('Authentication');
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) next(new ErrorHandler(401, 'Missing access token'));
   try {
-    const verified = await jwt.verify(token, publicKEY, {
+    const verified = jwt.verify(token, publicKEY, {
       algorithms: ['RS256'],
     });
     req.user = verified;

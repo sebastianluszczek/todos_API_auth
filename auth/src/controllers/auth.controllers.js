@@ -8,10 +8,6 @@ const privateKEY = fs.readFileSync(
   path.join(__dirname, '../..', 'private.key'),
   'utf8'
 );
-const publicKEY = fs.readFileSync(
-  path.join(__dirname, '../..', 'public.key'),
-  'utf8'
-);
 
 const { getUserByEmail, createUser } = require('../services/user.services');
 
